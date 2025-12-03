@@ -1,0 +1,54 @@
+{{/* Basis lay-out: moderne, toegankelijke UI met CSS-variabelen en responsive grid */}}
+{{ define "layout" }}
+<!doctype html>
+<html lang="nl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Is deze domeinnaam te koop? · _for-sale checker</title>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+  <header class="site-header">
+    <div class="container header-grid">
+      <div class="brand">
+        <span class="logo">🟦</span>
+        <a href="/" class="brand-name">_for-sale checker</a>
+      </div>
+      <nav class="nav">
+        <a class="nav-link" href="/">Home</a>
+        <a class="nav-link" href="#" onclick="openAbout()">Over</a>
+        <!-- Dark/Light toggle -->
+        <button class="btn btn-secondary btn-sm" type="button" id="themeToggle" title="Thema wisselen" onclick="toggleTheme()" aria-label="Schakel thema">🌓</button>
+      </nav>
+    </div>
+  </header>
+
+  <main class="container">
+    {{ template "content" . }}
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <p>&copy; {{ .Now.Format "2006" }} · Voorbeeldimplementatie op basis van de <em>_for-sale</em> Internet‑Draft.
+        Gebruiksvriendelijk & veilig; geen automatische redirects.</p>
+    </div>
+  </footer>
+
+  <div id="linkModal" class="modal hidden">
+    <div class="modal-card">
+      <h3>Externe link openen?</h3>
+      <p>Je staat op het punt een externe link te openen. Controleer de bestemming voordat je doorgaat.</p>
+      <div class="modal-actions">
+        <button class="btn btn-secondary" onclick="closeModal()">Annuleren</button>
+        <a id="modalLink" class="btn btn-primary" target="_blank" rel="noopener noreferrer">Doorgaan</a>
+      </div>
+    </div>
+  </div>
+
+  <script src="/static/app.js"></script>
+</body>
+</html>
+{{ end }}
