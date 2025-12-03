@@ -310,7 +310,7 @@ func handleIndex(w http.ResponseWriter, r *http.Request) {
 func handleCheck(w http.ResponseWriter, r *http.Request) {
     domain := strings.TrimSpace(r.FormValue("domain"))
     if domain == "" {
-        http.Redirect(w, r, "/", http.StatusFound)
+        http.Redirect(w, r, "/forsale", http.StatusFound)
         return
     }
     info := checkDomain(domain)
