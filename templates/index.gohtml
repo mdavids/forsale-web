@@ -4,7 +4,7 @@
     <h1>Is deze domeinnaam te koop?</h1>
     <p class="lead">Vul een domeinnaam in (bijv. <strong>example.nl</strong>). We controleren of er een
       <code>_for-sale</code> TXT-record aanwezig is en tonen relevante gegevens.</p>
-    <form action="/check" method="get" class="form-grid" autocomplete="off" novalidate>
+    <form action="/lookup" method="get" class="form-grid" autocomplete="off" novalidate>
       <label for="domain" class="visually-hidden">Domeinnaam</label>
       <input id="domain" name="domain" type="text" class="input-lg" placeholder="{{ .DefaultDemo }}" required>
       <button class="btn btn-primary btn-lg" type="submit">Controleren</button>

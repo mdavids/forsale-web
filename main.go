@@ -351,14 +351,14 @@ func main() {
 
     // Routes
     http.HandleFunc("/", handleIndex)
-    http.HandleFunc("/check", handleCheck)
+    http.HandleFunc("/lookup", handleCheck)
     http.HandleFunc("/api/check", handleAPI)
     http.Handle("/static/", http.StripPrefix("/static/", fs))
 
-    // Poort via env PORT of default 8080
+    // Poort via env PORT of default 8081
     port := os.Getenv("PORT")
     if port == "" {
-        port = "8080"
+        port = "8081"
     }
     log.Printf("Forsale-web gestart op :%s", port)
     log.Printf("Open http://localhost:%s", port)
