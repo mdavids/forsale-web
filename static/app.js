@@ -67,7 +67,7 @@ function closeModal(){
 }
 
 function openAbout(){
-  alert("Deze tool controleert _for-sale TXT-records conform de Internet-Draft.\n\nVeiligheidsprincipe: geen automatische redirects, duidelijke waarschuwingen, en IDN-bewuste weergave.");
+  alert("Deze tool controleert _for-sale TXT-records conform draft-davids-forsalereg-18.\n\nEigenschappen: geen automatische redirects, duidelijke waarschuwingen en IDN-bewuste weergave.");
 }
 
 // Publiceer functies op window (voor inline onclick handlers)
