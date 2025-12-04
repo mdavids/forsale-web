@@ -203,6 +203,7 @@ pre{
 .footer-inline p {
   display: flex;
   align-items: center;
+  gap: 0.2rem;
 }
 
 .footer-inline img {
