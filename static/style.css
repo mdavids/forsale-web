@@ -199,3 +199,13 @@ pre{
 }
 
 .modal-actions{display:flex;gap:12px;margin-top:16px}
+
+.footer-inline p {
+  display: flex;
+  align-items: center;
+}
+
+.footer-inline img {
+  height: 3.0em;
+  margin-right: 0.5rem;
+}
