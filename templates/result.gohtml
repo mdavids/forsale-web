@@ -14,18 +14,18 @@
       {{ if .Info.ForSale }}
         <!-- geen grid-2 <div class="grid-2"> -->
         <div>
-          {{ if .Info.FVal }}<div class="panel"><h3>Indicatieve prijs</h3><ul class="list">{{ range .Info.FVal }}<li><span class="price">{{ .FormattedNice }}</span> <span class="muted">({{ .Currency }} {{ .AmountString }})</span></li>{{ end }}</ul><p class="disclaimer">Prijs is indicatief - verifieer bij verkoper.</p></div>{{ end }}
+          {{ if .Info.FVal }}<div class="panel"><h3>Indicatieve prijs:</h3><ul class="list">{{ range .Info.FVal }}<li><span class="price">{{ .FormattedNice }}</span> <span class="muted">({{ .Currency }} {{ .AmountString }})</span></li>{{ end }}</ul><p class="disclaimer">Prijs is indicatief - verifieer bij verkoper.</p></div>{{ end }}
           <br>
-          {{ if .Info.FUri }}<div class="panel"><h3>Contact & meer informatie</h3><ul class="list">{{ range .Info.FUri }}<li>{{ if .Valid }}<a href="#" onclick="confirmOpen('{{ .URI }}')" class="link">{{ .URI }}</a><span class="tag">{{ .Scheme }}</span>{{ else }}<span class="muted">{{ .URI }}</span><span class="tag tag-warn">oncontroleerbaar</span>{{ if .Note }}<div class="note">{{ .Note }}</div>{{ end }}{{ end }}</li>{{ end }}</ul><p class="disclaimer">We redirecten niet automatisch - jouw bevestiging is vereist.</p></div>{{ end }}
+          {{ if .Info.FUri }}<div class="panel"><h3>Contact & meer informatie:</h3><ul class="list">{{ range .Info.FUri }}<li>{{ if .Valid }}<a href="#" onclick="confirmOpen('{{ .URI }}')" class="link">{{ .URI }}</a><span class="tag">{{ .Scheme }}</span>{{ else }}<span class="muted">{{ .URI }}</span><span class="tag tag-warn">oncontroleerbaar</span>{{ if .Note }}<div class="note">{{ .Note }}</div>{{ end }}{{ end }}</li>{{ end }}</ul><p class="disclaimer">We redirecten niet automatisch - jouw bevestiging is vereist.</p></div>{{ end }}
           <br>
-          {{ if .Info.FTxt }}<div class="panel"><h3>Extra informatie</h3><ul class="list">{{ range .Info.FTxt }}<li>{{ . }}</li>{{ end }}</ul></div>{{ end }}
+          {{ if .Info.FTxt }}<div class="panel"><h3>Extra informatie:</h3><ul class="list">{{ range .Info.FTxt }}<li>{{ . }}</li>{{ end }}</ul></div>{{ end }}
           <br>
 <!--
-          {{ if .Info.FCod }}<div class="panel"><h3>Verwerkingscode(s)</h3><ul class="list">{{ range .Info.FCod }}<li class="mono">{{ . }}</li>{{ end }}</ul><p class="hint">Deze codes zijn doorgaans alleen maar betekenisvol binnen een ecosysteem (bijv. registrar/registry).</p></div>{{ end }}
+          {{ if .Info.FCod }}<div class="panel"><h3>Verwerkingscode(s):</h3><ul class="list">{{ range .Info.FCod }}<li class="mono">{{ . }}</li>{{ end }}</ul><p class="hint">Deze codes zijn doorgaans alleen maar betekenisvol binnen een ecosysteem (bijv. registrar/registry).</p></div>{{ end }}
 -->
         </div>
       {{ else }}
-        <div class="empty-state"><h3>Geen geldig <code>_for-sale</code> record gevonden</h3><p>Deze domeinnaam lijkt niet expliciet als te koop gemarkeerd.<br>Je kunt informatie proberen te vinden via WHOIS/RDAP.<br>Of bezoek <a href="#" onclick="confirmOpen('http:\/\/{{ .Info.Unicode }}')" class="link">{{ .Info.Unicode }}</a> om te zien of daar meer informatie is te vinden.</p></div>
+        <div class="empty-state"><h3>Geen geldig <code>_for-sale</code> record gevonden.</h3><p>Deze domeinnaam lijkt niet expliciet als te koop gemarkeerd.<br>Je kunt informatie proberen te vinden via WHOIS/RDAP.<br>Of bezoek <a href="#" onclick="confirmOpen('http:\/\/{{ .Info.Unicode }}')" class="link">{{ .Info.Unicode }}</a> om te zien of daar meer informatie is te vinden.</p></div>
       {{ end }}
 <!--
       {{ if .Info.Reasons }}<div class="panel"><h3>Analyse</h3><ul class="list">{{ range .Info.Reasons }}<li>{{ . }}</li>{{ end }}</ul></div>{{ end }}
