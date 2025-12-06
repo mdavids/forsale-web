@@ -167,7 +167,7 @@ func fetchSIDNForSaleURL(domain string) (string, error) {
     apiURL := "https://api.sidn.nl/rdap/whois?domain=" + url.QueryEscape(domain)
     
     log.Printf("[RDAP] Ophalen voor domein: %s", domain)
-    log.Printf("[RDAP] API URL: %s", apiURL)
+    //log.Printf("[RDAP] API URL: %s", apiURL)
     
     // HTTP client met timeout
     client := &http.Client{
@@ -207,8 +207,8 @@ func fetchSIDNForSaleURL(domain string) (string, error) {
         return "", err
     }
     
-    log.Printf("[RDAP] Response body lengte voor %s: %d bytes", domain, len(body))
-    log.Printf("[RDAP] Response body voor %s: %s", domain, string(body))
+    //log.Printf("[RDAP] Response body lengte voor %s: %d bytes", domain, len(body))
+    //log.Printf("[RDAP] Response body voor %s: %s", domain, string(body))
     
     var rdapResp SIDNRDAPResponse
     if err := json.Unmarshal(body, &rdapResp); err != nil {
@@ -217,7 +217,7 @@ func fetchSIDNForSaleURL(domain string) (string, error) {
     }
     
     log.Printf("[RDAP] Geparsed domain uit response: %s", rdapResp.Details.Domain)
-    log.Printf("[RDAP] Geparsed forSaleUrl: %s", rdapResp.Details.ForSaleUrl)
+    //log.Printf("[RDAP] Geparsed forSaleUrl: %s", rdapResp.Details.ForSaleUrl)
     
     // Verificatie: check of de domeinnaam overeenkomt
     if rdapResp.Details.Domain != "" && strings.ToLower(rdapResp.Details.Domain) != strings.ToLower(domain) {
