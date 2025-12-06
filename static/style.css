@@ -69,7 +69,7 @@ a{color:var(--primary);text-decoration:none;transition:color .20s ease}
 a:hover{text-decoration:underline}
 
 .container{max-width:1000px;margin:0 auto;padding:24px}
-.mono{font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace}
+.mono{font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace; font-size: .7rem;}
 .visually-hidden{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);border:0}
 
 /* ===========================

@@ -3,6 +3,7 @@ package main
 import (
     "encoding/json"
     "html/template"
+    "io"
     "log"
     "net"
     "net/http"
@@ -27,6 +28,7 @@ import (
   - Net.LookupTXT voor DNS; ondersteunt IDN via golang.org/x/net/idna.
   - Robust parsing van "v=FORSALE1;" + één content-tag per record.
   - Presentatie voor niet-technische gebruikers; moderne UI.
+  - SIDN RDAP integratie voor NLFS- fcod codes.
 */
 
 // ---------- Datatypen ----------
@@ -45,6 +47,13 @@ type Price struct {
     FormattedNice string  `json:"formattedNice"`
 }
 
+// Nieuwe struct voor fcod met eventuele RDAP URL
+type ForSaleCode struct {
+    Code        string `json:"code"`
+    ForSaleURL  string `json:"forSaleUrl,omitempty"`
+    HasRDAPData bool   `json:"hasRdapData"`
+}
+
 type SaleInfo struct {
     DomainInput string `json:"domainInput"`
     Unicode     string `json:"unicode"`
@@ -56,10 +65,18 @@ type SaleInfo struct {
     FTxt  []string       `json:"ftxt"`
     FUri  []ValidatedURI `json:"furi"`
     FVal  []Price        `json:"fval"`
-    FCod  []string       `json:"fcod"`
+    FCod  []ForSaleCode  `json:"fcod"`
     RawRR []string       `json:"rawRR"`
 
     Warnings []string `json:"warnings"`
+}
+
+// SIDN RDAP response structuur (alleen relevante velden)
+type SIDNRDAPResponse struct {
+    Details struct {
+        Domain     string `json:"domain"`
+        ForSaleUrl string `json:"forSaleUrl"`
+    } `json:"details"`
 }
 
 // ---------- Helpers ----------
@@ -144,6 +161,79 @@ func hasVersionPrefix(rr string) (bool, string) {
     return true, rest
 }
 
+// Nieuwe functie: haal forSaleUrl op van SIDN RDAP API
+func fetchSIDNForSaleURL(domain string) (string, error) {
+    // Bouw de RDAP URL
+    apiURL := "https://api.sidn.nl/rdap/whois?domain=" + url.QueryEscape(domain)
+    
+    log.Printf("[RDAP] Ophalen voor domein: %s", domain)
+    log.Printf("[RDAP] API URL: %s", apiURL)
+    
+    // HTTP client met timeout
+    client := &http.Client{
+        Timeout: 5 * time.Second,
+    }
+    
+    // Maak een request met custom headers
+    req, err := http.NewRequest("GET", apiURL, nil)
+    if err != nil {
+        log.Printf("[RDAP] Fout bij maken request voor %s: %v", domain, err)
+        return "", err
+    }
+    
+    // Voeg headers toe om WAF te passeren
+    // Werkt voor SIDN API niet, maar is ook niet nodig vanuit SIDN-netwerk.
+    // Daarom custom UA van gemaakt voor de fun. 
+    req.Header.Set("User-Agent", "Forsale-Web/20251206 (SIDN Labs)")
+    req.Header.Set("Accept", "application/json, */*")
+    
+    resp, err := client.Do(req)
+    if err != nil {
+        log.Printf("[RDAP] HTTP fout voor %s: %v", domain, err)
+        return "", err
+    }
+    defer resp.Body.Close()
+    
+    log.Printf("[RDAP] HTTP status voor %s: %d", domain, resp.StatusCode)
+    
+    if resp.StatusCode != http.StatusOK {
+        log.Printf("[RDAP] Geen OK status voor %s, status: %d", domain, resp.StatusCode)
+        return "", nil // geen error, maar ook geen data
+    }
+    
+    body, err := io.ReadAll(resp.Body)
+    if err != nil {
+        log.Printf("[RDAP] Fout bij lezen body voor %s: %v", domain, err)
+        return "", err
+    }
+    
+    log.Printf("[RDAP] Response body lengte voor %s: %d bytes", domain, len(body))
+    log.Printf("[RDAP] Response body voor %s: %s", domain, string(body))
+    
+    var rdapResp SIDNRDAPResponse
+    if err := json.Unmarshal(body, &rdapResp); err != nil {
+        log.Printf("[RDAP] JSON parse fout voor %s: %v", domain, err)
+        return "", err
+    }
+    
+    log.Printf("[RDAP] Geparsed domain uit response: %s", rdapResp.Details.Domain)
+    log.Printf("[RDAP] Geparsed forSaleUrl: %s", rdapResp.Details.ForSaleUrl)
+    
+    // Verificatie: check of de domeinnaam overeenkomt
+    if rdapResp.Details.Domain != "" && strings.ToLower(rdapResp.Details.Domain) != strings.ToLower(domain) {
+        log.Printf("[RDAP] WAARSCHUWING: Domain mismatch! Gevraagd: %s, Ontvangen: %s", domain, rdapResp.Details.Domain)
+        return "", nil // veiligheidshalve geen data teruggeven bij mismatch
+    }
+    
+    if rdapResp.Details.ForSaleUrl != "" {
+        log.Printf("[RDAP] Succes: forSaleUrl gevonden voor %s: %s", domain, rdapResp.Details.ForSaleUrl)
+    } else {
+        log.Printf("[RDAP] Geen forSaleUrl gevonden in response voor %s", domain)
+    }
+    
+    return rdapResp.Details.ForSaleUrl, nil
+}
+
 // parse één TXT-record (na versie-tag) voor de content-tag
 func parseForsaleRR(content string, info *SaleInfo) {
     content = strings.TrimSpace(content)
@@ -185,7 +275,24 @@ func parseForsaleRR(content string, info *SaleInfo) {
     case strings.HasPrefix(content, "fcod="):
         val := sanitizeText(content[len("fcod="):])
         if val != "" {
-            info.FCod = append(info.FCod, val)
+            fcode := ForSaleCode{
+                Code:        val,
+                HasRDAPData: false,
+            }
+            
+            // Check of het een NLFS- code is
+            if strings.HasPrefix(val, "NLFS-") {
+                // Probeer forSaleUrl op te halen van SIDN
+                forSaleURL, err := fetchSIDNForSaleURL(info.Punycode)
+                if err != nil {
+                    log.Printf("Fout bij ophalen SIDN RDAP voor %s: %v", info.Punycode, err)
+                } else if forSaleURL != "" {
+                    fcode.ForSaleURL = forSaleURL
+                    fcode.HasRDAPData = true
+                }
+            }
+            
+            info.FCod = append(info.FCod, fcode)
             info.ForSale = true
         } else {
             info.Reasons = append(info.Reasons, "Lege fcod=-waarde")
@@ -255,7 +362,7 @@ func checkDomain(input string) SaleInfo {
 
     // Sorteer output voor consistente presentatie
     sort.Strings(info.FTxt)
-    sort.Strings(info.FCod)
+    sort.SliceStable(info.FCod, func(i, j int) bool { return info.FCod[i].Code < info.FCod[j].Code })
     sort.SliceStable(info.FUri, func(i, j int) bool { return info.FUri[i].URI < info.FUri[j].URI })
     sort.SliceStable(info.FVal, func(i, j int) bool { return info.FVal[i].FormattedNice < info.FVal[j].FormattedNice })
 
