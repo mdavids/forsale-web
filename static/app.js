@@ -4,70 +4,76 @@
 const THEME_KEY = 'forsale.theme';
 
 function applyTheme(theme){
-  document.documentElement.setAttribute('data-theme', theme);
-  const btn = document.getElementById('themeToggle');
-  if (btn){
-    const isLight = theme === 'light';
-    // Icoon + ARIA
-    //btn.textContent = isLight ? '🌞' : '🌙';
-    btn.textContent = isLight ? '🌓' : '🌙';
-    btn.setAttribute('aria-label', isLight ? 'Schakel naar donker thema' : 'Schakel naar licht thema');
-    btn.title = isLight ? 'Donker thema' : 'Licht thema';
-  }
+    // Dit stelt het data-theme attribuut onmiddellijk in op <html>
+    document.documentElement.setAttribute('data-theme', theme);
+
+    // De knop-update kan in applyTheme blijven, de 'if (btn)' zorgt dat het niet crasht
+    // als de knop nog niet in de DOM zit bij het initieel laden in de <head>.
+    const btn = document.getElementById('themeToggle');
+    if (btn){
+        const isLight = theme === 'light';
+        // Icoon + ARIA
+        btn.textContent = isLight ? '🌓' : '🌙';
+        btn.setAttribute('aria-label', isLight ? 'Schakel naar donker thema' : 'Schakel naar licht thema');
+        btn.title = isLight ? 'Donker thema' : 'Licht thema';
+    }
 }
 
 function detectSystemPref(){
-  try {
-    return window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
-  } catch {
-    return 'dark';
-  }
+    try {
+        // Controleert de voorkeur van het besturingssysteem
+        return window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
+    } catch {
+        return 'dark';
+    }
 }
 
 function initTheme(){
-  // Lees eventuele opgeslagen keuze
-  const saved = (() => {
-    try { return localStorage.getItem(THEME_KEY); } catch { return null; }
-  })();
+    // 1. Lees eventuele opgeslagen keuze uit localStorage
+    const saved = (() => {
+        try { return localStorage.getItem(THEME_KEY); } catch { return null; }
+    })();
 
-  const theme = (saved === 'light' || saved === 'dark') ? saved : detectSystemPref();
+    // 2. Bepaal het uiteindelijke thema: Opgeslagen > Systeemvoorkeur > Dark (als fallback)
+    const theme = (saved === 'light' || saved === 'dark') ? saved : detectSystemPref();
 
-  // Subtiele init: korte delay zodat transitie niet "flasht" bij init
-  requestAnimationFrame(() => {
+    // 3. PAS HET THEMA DIRECT TOE ZONDER WACHTEN
     applyTheme(theme);
-    document.body.classList.add('theme-ready'); // optioneel: hook voor extra effecten
-  });
 }
 
 function toggleTheme(){
-  const current = document.documentElement.getAttribute('data-theme') || detectSystemPref();
-  const next = current === 'light' ? 'dark' : 'light';
-  applyTheme(next);
-  try { localStorage.setItem(THEME_KEY, next); } catch {}
+    // Haal het huidige thema op, of gebruik Systeemvoorkeur als fallback
+    const current = document.documentElement.getAttribute('data-theme') || detectSystemPref();
+    const next = current === 'light' ? 'dark' : 'light';
+    applyTheme(next);
+    try { localStorage.setItem(THEME_KEY, next); } catch {}
 }
 
-// Init bij load
-document.addEventListener('DOMContentLoaded', initTheme);
+// 🎉 BELANGRIJK: ROEP DE FUNCTIE DIRECT AAN
+// Dit zorgt ervoor dat het thema wordt ingesteld VOORDAT de browser de pagina rendert.
+initTheme(); 
+
 
 // ===========================
 // Modal (bevestiging externe link)
+// De rest van de code blijft ongewijzigd
 // ===========================
 function confirmOpen(href){
-  const modal = document.getElementById('linkModal');
-  const modalLink = document.getElementById('modalLink');
-  if (!modal || !modalLink) return;
-  modalLink.setAttribute('href', href);
-  modal.classList.remove('hidden');
+    const modal = document.getElementById('linkModal');
+    const modalLink = document.getElementById('modalLink');
+    if (!modal || !modalLink) return;
+    modalLink.setAttribute('href', href);
+    modal.classList.remove('hidden');
 }
 
 function closeModal(){
-  const modal = document.getElementById('linkModal');
-  if (!modal) return;
-  modal.classList.add('hidden');
+    const modal = document.getElementById('linkModal');
+    if (!modal) return;
+    modal.classList.add('hidden');
 }
 
 function openAbout(){
-  alert("Deze tool controleert _for-sale TXT-records conform draft-davids-forsalereg-18.\n\nEigenschappen: geen automatische redirects, duidelijke waarschuwingen en IDN-bewuste weergave.\n\nDISCLAIMER: Dit is een demo-applicatie! Aan de weergegeven resultaten kunnen GEEN rechten worden ontleend.");
+    alert("Deze tool controleert _for-sale TXT-records conform draft-davids-forsalereg-18.\n\nEigenschappen: geen automatische redirects, duidelijke waarschuwingen en IDN-bewuste weergave.\n\nDISCLAIMER: Dit is een demo-applicatie! Aan de weergegeven resultaten kunnen GEEN rechten worden ontleend.");
 }
 
 // Publiceer functies op window (voor inline onclick handlers)
