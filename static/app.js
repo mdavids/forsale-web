@@ -37,7 +37,7 @@ function initTheme(){
     // 2. Bepaal het uiteindelijke thema: Opgeslagen > Systeemvoorkeur > Dark (als fallback)
     const theme = (saved === 'light' || saved === 'dark') ? saved : detectSystemPref();
 
-    // 3. PAS HET THEMA DIRECT TOE ZONDER WACHTEN
+    // 3. Pas het thema direct aan zonder te wachten
     applyTheme(theme);
 }
 
@@ -49,14 +49,12 @@ function toggleTheme(){
     try { localStorage.setItem(THEME_KEY, next); } catch {}
 }
 
-// 🎉 BELANGRIJK: ROEP DE FUNCTIE DIRECT AAN
 // Dit zorgt ervoor dat het thema wordt ingesteld VOORDAT de browser de pagina rendert.
 initTheme(); 
 
 
 // ===========================
 // Modal (bevestiging externe link)
-// De rest van de code blijft ongewijzigd
 // ===========================
 function confirmOpen(href){
     const modal = document.getElementById('linkModal');
