@@ -1,5 +1,5 @@
 {{ define "content" }}
-<section class="result">
+<section class="result {{ if .Info.ForSale }}js-trigger-confetti{{ end }}">
   <div class="card">
     <div class="card-header flex-between">
       <div>

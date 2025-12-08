@@ -79,3 +79,28 @@ window.toggleTheme = toggleTheme;
 window.confirmOpen = confirmOpen;
 window.closeModal = closeModal;
 window.openAbout = openAbout;
+
+
+// Confetti
+document.addEventListener('DOMContentLoaded', () => {
+    // Deze code wordt pas uitgevoerd NADAT alle HTML is geparsd
+    // en de elementen met de class .js-trigger-confetti beschikbaar zijn.
+
+    const confettiElement = document.querySelector('.js-trigger-confetti');
+
+    if (confettiElement) {
+        // We weten nu zeker dat de confetti functie (van de CDN) bestaat
+        // en het HTML-element is gevonden. Tijd voor confetti!
+        
+        // Gebruik 'load' is hier niet per se nodig, omdat we al DOMContentLoaded gebruiken.
+        // We kunnen de confetti direct starten, of met een kleine vertraging.
+        
+        confetti({
+            particleCount: 200,
+            spread: 90,
+            origin: { y: 0.65 }
+        });
+    }
+
+    // Andere code van app.js die met themes/CSS werkt kan hier ook staan.
+});
