@@ -81,7 +81,7 @@ window.closeModal = closeModal;
 window.openAbout = openAbout;
 
 
-// Confetti
+// Confetti - https://github.com/catdad/canvas-confetti
 document.addEventListener('DOMContentLoaded', () => {
     // Deze code wordt pas uitgevoerd NADAT alle HTML is geparsd
     // en de elementen met de class .js-trigger-confetti beschikbaar zijn.
