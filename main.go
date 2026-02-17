@@ -287,7 +287,7 @@ func parseForsaleRR(content string, info *SaleInfo) {
                 if err != nil {
                     log.Printf("Fout bij ophalen SIDN RDAP voor %s: %v", info.Punycode, err)
                 } else if forSaleURL != "" {
-                    fcode.ForSaleURL = forSaleURL
+                    fcode.ForSaleURL = forSaleURL + "?domain=" + info.Punycode
                     fcode.HasRDAPData = true
                 }
             }
