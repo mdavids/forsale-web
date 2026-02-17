@@ -110,13 +110,17 @@ func sanitizeText(s string) string {
 var reFval = regexp.MustCompile(`^([A-Z]+)(\d+(?:\.\d+)?)$`)
 
 func formatPrice(cur, amt string) Price {
+
+    // Zet decimaal punt om naar komma
+    niceAmt := strings.Replace(amt, ".", ",", 1)
+    
     p := Price{Currency: cur, AmountString: amt, FormattedNice: cur + " " + amt}
     symbol := map[string]string{
         "EUR": "€", "USD": "$", "GBP": "£", "JPY": "¥",
         "CHF": "CHF", "AUD": "A$", "CAD": "C$", "CNY": "¥", "INR": "₹",
     }
     if sym, ok := symbol[cur]; ok {
-        p.FormattedNice = sym + " " + amt
+        p.FormattedNice = sym + " " + niceAmt
     }
     return p
 }
