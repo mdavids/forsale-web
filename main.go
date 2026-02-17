@@ -15,11 +15,6 @@ import (
     "strings"
     "time"
 
-    "strconv"
-    "fmt"    
-    "golang.org/x/text/language"
-    "golang.org/x/text/message"
-
     "golang.org/x/net/idna"
 )
 
@@ -114,28 +109,19 @@ func sanitizeText(s string) string {
 
 var reFval = regexp.MustCompile(`^([A-Z]+)(\d+(?:\.\d+)?)$`)
 
-func formatPrice(cur string, amt float64) Price {
-    p := Price{
-        Currency:    cur,
-        AmountFloat: amt,
-        AmountString: fmt.Sprintf("%.2f", amt), // API / machine-readable
-    }
+func formatPrice(cur, amt string) Price {
 
-    // Locale-aware formatting voor Nederlandse stijl
-    n := message.NewPrinter(language.Dutch)
-    niceAmt := n.Sprintf("%.2f", amt) // 1.500,00
-
-    // Valuta-symbool
-    symbols := map[string]string{
-        "EUR": "€", "USD": "$", "GBP": "£",
-        "JPY": "¥", "CHF": "CHF", "AUD": "A$", "CAD": "C$", "CNY": "¥", "INR": "₹",
+    // Zet decimaal punt om naar komma
+    niceAmt := strings.Replace(amt, ".", ",", 1)
+    
+    p := Price{Currency: cur, AmountString: amt, FormattedNice: cur + " " + niceAmt}
+    symbol := map[string]string{
+        "EUR": "€", "USD": "$", "GBP": "£", "JPY": "¥",
+        "CHF": "CHF", "AUD": "A$", "CAD": "C$", "CNY": "¥", "INR": "₹",
     }
-    if sym, ok := symbols[cur]; ok {
+    if sym, ok := symbol[cur]; ok {
         p.FormattedNice = sym + " " + niceAmt
-    } else {
-        p.FormattedNice = cur + " " + niceAmt
     }
-
     return p
 }
 
@@ -283,18 +269,7 @@ func parseForsaleRR(content string, info *SaleInfo) {
         val := strings.TrimSpace(content[len("fval="):])
         m := reFval.FindStringSubmatch(val)
         if len(m) == 3 {
-            // m[1] = currency, m[2] = amount als string
-
-            // Zet string om naar float64
-            amtFloat, err := strconv.ParseFloat(m[2], 64)
-            if err != nil {
-                info.Reasons = append(info.Reasons, "Ongeldige numerieke waarde in fval: "+m[2])
-                info.ForSale = true
-                break
-            }
-
-            // FormatPrice gebruikt nu float64 en geeft locale-aware weergave
-            price := formatPrice(m[1], amtFloat)
+            price := formatPrice(m[1], m[2])
             info.FVal = append(info.FVal, price)
             info.ForSale = true
         } else {
