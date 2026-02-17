@@ -114,7 +114,7 @@ func formatPrice(cur, amt string) Price {
     // Zet decimaal punt om naar komma
     niceAmt := strings.Replace(amt, ".", ",", 1)
     
-    p := Price{Currency: cur, AmountString: amt, FormattedNice: cur + " " + amt}
+    p := Price{Currency: cur, AmountString: amt, FormattedNice: cur + " " + niceAmt}
     symbol := map[string]string{
         "EUR": "€", "USD": "$", "GBP": "£", "JPY": "¥",
         "CHF": "CHF", "AUD": "A$", "CAD": "C$", "CNY": "¥", "INR": "₹",
