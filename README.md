@@ -3,5 +3,5 @@ Demo for draft-davids-forsalereg
 
 ## Live demo
 
-https://forsalereg.sidnlabs.nl/forsale/
+https://rfc10023.nl/forsale/
 
