@@ -30,9 +30,9 @@
         <a href="{{ AddLang .Lang "/forsale" }}" class="brand-name">_for-sale checker</a>
       </div>
       <nav class="nav">
-        <a class="nav-link" href="{{ AddLang .Lang "/" }}">{{ T .Lang "nav.home" }}</a>
+        <a class="nav-link" href="/forsale{{ AddLang .Lang "/" }}">{{ T .Lang "nav.home" }}</a>
         <a class="nav-link" href="#" onclick="openAbout()">{{ T .Lang "nav.about" }}</a>
-        <a class="nav-link lang-switch" href="{{ .LangSwitchURL }}">{{ if eq .Lang "en" }}NL{{ else }}EN{{ end }}</a>
+        <a class="nav-link lang-switch" href="/forsale{{ .LangSwitchURL }}">{{ if eq .Lang "en" }}NL{{ else }}EN{{ end }}</a>
         <!-- Dark/Light toggle -->
         <button class="btn btn-secondary btn-sm" type="button" id="themeToggle" title="{{ T .Lang "theme.toggle.title" }}" onclick="toggleTheme()" aria-label="{{ T .Lang "theme.toggle.title" }}">🌓</button>
       </nav>
