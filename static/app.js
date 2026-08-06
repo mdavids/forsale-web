@@ -12,10 +12,11 @@ function applyTheme(theme){
     const btn = document.getElementById('themeToggle');
     if (btn){
         const isLight = theme === 'light';
+        const i18n = window.I18N || {};
         // Icoon + ARIA
         btn.textContent = isLight ? '🌓' : '🌙';
-        btn.setAttribute('aria-label', isLight ? 'Schakel naar donker thema' : 'Schakel naar licht thema');
-        btn.title = isLight ? 'Donker thema' : 'Licht thema';
+        btn.setAttribute('aria-label', isLight ? i18n.ariaToDark : i18n.ariaToLight);
+        btn.title = isLight ? i18n.titleDark : i18n.titleLight;
     }
 }
 
@@ -71,7 +72,7 @@ function closeModal(){
 }
 
 function openAbout(){
-    alert("Deze tool controleert _for-sale TXT-records conform draft-davids-forsalereg-18.\n\nEigenschappen: geen automatische redirects, duidelijke waarschuwingen en IDN-bewuste weergave.\n\nDISCLAIMER: Dit is een demo-applicatie! Aan de weergegeven resultaten kunnen GEEN rechten worden ontleend.");
+    alert((window.I18N && window.I18N.about) || '');
 }
 
 // Publiceer functies op window (voor inline onclick handlers)

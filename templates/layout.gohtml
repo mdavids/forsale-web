@@ -1,15 +1,25 @@
 {{/* Basis lay-out: moderne, toegankelijke UI met CSS-variabelen en responsive grid */}}
 {{ define "layout" }}
 <!doctype html>
-<html lang="nl">
+<html lang="{{ .Lang }}">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Is deze domeinnaam te koop? · _for-sale checker</title>
+  <title>{{ T .Lang "title" }}</title>
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/static/style.css">
   <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@latest/dist/confetti.browser.min.js"></script>
+  <script>
+    window.LANG = "{{ .Lang }}";
+    window.I18N = {
+      ariaToDark:  "{{ T .Lang "js.aria_to_dark" }}",
+      ariaToLight: "{{ T .Lang "js.aria_to_light" }}",
+      titleDark:   "{{ T .Lang "js.title_dark" }}",
+      titleLight:  "{{ T .Lang "js.title_light" }}",
+      about:       "{{ T .Lang "js.about" }}"
+    };
+  </script>
   <script src="/static/app.js"></script>
 </head>
 <body>
@@ -17,13 +27,14 @@
     <div class="container header-grid">
       <div class="brand">
         <span class="logo">🟦</span>
-        <a href="/forsale" class="brand-name">_for-sale checker</a>
+        <a href="{{ AddLang .Lang "/forsale" }}" class="brand-name">_for-sale checker</a>
       </div>
       <nav class="nav">
-        <a class="nav-link" href="/">Home</a>
-        <a class="nav-link" href="#" onclick="openAbout()">Over</a>
+        <a class="nav-link" href="{{ AddLang .Lang "/" }}">{{ T .Lang "nav.home" }}</a>
+        <a class="nav-link" href="#" onclick="openAbout()">{{ T .Lang "nav.about" }}</a>
+        <a class="nav-link lang-switch" href="{{ .LangSwitchURL }}">{{ if eq .Lang "en" }}NL{{ else }}EN{{ end }}</a>
         <!-- Dark/Light toggle -->
-        <button class="btn btn-secondary btn-sm" type="button" id="themeToggle" title="Thema wisselen" onclick="toggleTheme()" aria-label="Schakel thema">🌓</button>
+        <button class="btn btn-secondary btn-sm" type="button" id="themeToggle" title="{{ T .Lang "theme.toggle.title" }}" onclick="toggleTheme()" aria-label="{{ T .Lang "theme.toggle.title" }}">🌓</button>
       </nav>
     </div>
   </header>
@@ -34,18 +45,18 @@
 
   <footer class="site-footer">
     <div class="container footer-inline" >
-      <p><img src="/SIDN_Labs_logo.svg" alt="sidnlabs logo">&copy; {{ .Now.Format "2006" }} SIDN Labs · <a href="https://github.com/mdavids/forsale-web">Voorbeeldimplementatie</a> op basis van de
-         <a href="https://datatracker.ietf.org/doc/html/draft-davids-forsalereg"><em>_for-sale</em> Internet‑Draft</a>.</p>
+      <p><img src="/SIDN_Labs_logo.svg" alt="sidnlabs logo">&copy; {{ .Now.Format "2006" }} SIDN Labs · <a href="https://github.com/mdavids/forsale-web">{{ T .Lang "footer.example_impl" }}</a> {{ T .Lang "footer.based_on" }}
+         <a href="https://www.rfc-editor.org/rfc/rfc10023">RFC 10023 (<em>_for-sale</em>)</a>.</p>
     </div>
   </footer>
 
   <div id="linkModal" class="modal hidden">
     <div class="modal-card">
-      <h3>Externe link openen?</h3>
-      <p>Je staat op het punt een externe link te openen. Controleer de bestemming voordat je doorgaat.</p>
+      <h3>{{ T .Lang "modal.title" }}</h3>
+      <p>{{ T .Lang "modal.body" }}</p>
       <div class="modal-actions">
-        <button class="btn btn-secondary" onclick="closeModal()">Annuleren</button>
-        <a id="modalLink" class="btn btn-primary" target="_blank" rel="noopener noreferrer">Doorgaan</a>
+        <button class="btn btn-secondary" onclick="closeModal()">{{ T .Lang "modal.cancel" }}</button>
+        <a id="modalLink" class="btn btn-primary" target="_blank" rel="noopener noreferrer">{{ T .Lang "modal.continue" }}</a>
       </div>
     </div>
   </div>

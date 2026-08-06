@@ -1,15 +1,16 @@
 {{ define "content" }}
 <section class="hero">
   <div class="hero-card">
-    <h1>Is deze domeinnaam te koop?</h1>
-    <p class="lead">Vul een domeinnaam in (bijv. <strong>example.nl</strong>). We controleren of er een
-      <code>_for-sale</code> TXT-record aanwezig is en tonen relevante gegevens.</p>
+    <h1>{{ T .Lang "index.h1" }}</h1>
+    <p class="lead">{{ T .Lang "index.lead_pre" }} <strong>{{ .DefaultDemo }}</strong>{{ T .Lang "index.lead_mid" }}
+      <code>_for-sale</code> {{ T .Lang "index.lead_post" }}</p>
     <form action="/lookup" method="get" class="form-grid" autocomplete="off" novalidate>
-      <label for="domain" class="visually-hidden">Domeinnaam</label>
+      <input type="hidden" name="lang" value="{{ .Lang }}">
+      <label for="domain" class="visually-hidden">{{ T .Lang "index.domain_label" }}</label>
       <input id="domain" name="domain" type="text" class="input-lg" placeholder="{{ .DefaultDemo }}" required autocomplete="off" spellcheck="false" autocapitalize="off" inputmode="url">
-      <button class="btn btn-primary btn-lg" type="submit">Controleren</button>
+      <button class="btn btn-primary btn-lg" type="submit">{{ T .Lang "index.submit" }}</button>
     </form>
-    <p class="hint">Werkt met Unicode domeinen (IDN). We tonen zowel Unicode als Punycode om misverstanden te voorkomen.</p>
+    <p class="hint">{{ T .Lang "index.hint" }}</p>
   </div>
 </section>
 {{ end }}

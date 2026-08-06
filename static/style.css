@@ -84,6 +84,27 @@ a:hover{text-decoration:underline}
 .nav-link{color:var(--muted);transition:color .20s ease}
 .nav-link:hover{color:var(--text)}
 
+.lang-switch{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  min-width:2.6em;
+  padding:5px 12px;
+  border-radius:999px;
+  border:1px solid var(--primary);
+  color:var(--primary);
+  font-weight:700;
+  font-size:.78rem;
+  letter-spacing:.03em;
+  transition: background-color .15s ease, color .15s ease, border-color .15s ease, transform .1s ease;
+}
+.lang-switch:hover{
+  background:var(--primary);
+  color:#fff;
+  text-decoration:none;
+}
+.lang-switch:active{transform:scale(.96)}
+
 /* ===========================
    Hero / invoer
    =========================== */
